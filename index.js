@@ -4,8 +4,12 @@ const app = express()
 const sqlite = require('sqlite')
 const dbConnection = sqlite.open('banco.sqlite', { Promise })
 
+const bodyParser = require('body-parser')
+
+
 app.set('view engine','ejs')
 app.use(express.static('public')) //se nao tiver no app.get, jogar para a pasta public
+app.use(bodyParser.urlencoded({extended:true})) //
 
 console.log(1);
 
@@ -43,6 +47,46 @@ app.get('/vaga/:id',async(request,response) => {
       {
           vaga
       })
+})
+
+app.get('/admin',(req,res) => { 
+    res.render('admin/home')
+})
+
+app.get('/admin/vagas',async(req,res) => { 
+    
+    const db = await dbConnection
+    const vagas = await db.all('select * from vagas;')
+    
+    res.render('admin/vagas',{ vagas })
+
+})
+
+app.get('/admin/vagas/nova',async(req,res) => { 
+    
+    //const db = await dbConnection
+    //const vagas = await db.all('select * from vagas;')
+    
+    res.render('admin/nova-vaga')
+
+})
+
+
+app.get('/admin/vagas/delete/:id',async(req,res) => { 
+    
+    const db = await dbConnection
+    //console.log(req.params.id)    
+    await db.run('delete from vagas where id = '+req.params.id)    
+    res.redirect('/admin/vagas')
+
+})
+
+app.post('/admin/vagas/nova',async(req,res) => { 
+    //res.send(req.body)
+    const db = await dbConnection
+    const { titulo, descricao, categoria } = req.body;    
+    await db.run(`insert into vagas (categoria, titulo, descricao ) values('${categoria}','${titulo}','${descricao}'  )`)    
+    res.redirect('/admin/vagas')
 })
 
 const init = async() => { //Toda vez que lida com I/O é preciso usar async Promise 
