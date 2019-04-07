@@ -1,6 +1,23 @@
 <!-- <h1>Olá Fullstack Lab</h1>-->        
 <%- include('header') %>
+<!--
+<% categorias.forEach ( categoria => { %> 
+ <%- categoria.id %> = <%- categoria.categoria %>
+<% }) %>-->
 <h2>Open roles:</h2>
+
+<% categorias.forEach ( categoria => { %>
+<div>
+    <h3><%- categoria.categoria %></h3>
+    <ul>
+        <% categoria.vagas.forEach( vaga => { %>
+        <li><a href="vaga/<%- vaga.id %>"><%- vaga.titulo  %></a></li>
+        <% }) %>
+    </ul>
+</div>
+<% }) %>
+
+<!--
 <div>
     <h3>Engineering Team</h3>
     <ul>
@@ -12,5 +29,5 @@
         <ul>
         <li>Digital Marketing (San Francisco)</li>
     </ul>
-</div>        
+</div>        -->
 <%- include('footer') %>
